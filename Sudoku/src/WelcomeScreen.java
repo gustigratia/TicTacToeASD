@@ -9,11 +9,12 @@ public class WelcomeScreen extends JFrame {
     // Declare components
     private JTextField nameField;
     private JButton startButton;
+    private JComboBox<String> difficultyComboBox;
 
     public WelcomeScreen() {
         // Set up the welcome screen JFrame
         setTitle("Welcome to Sudoku");
-        setSize(400, 200);  // Set size for welcome screen
+        setSize(400, 120);  // Set size for welcome screen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);  // Center the window
 
@@ -22,14 +23,18 @@ public class WelcomeScreen extends JFrame {
         panel.setLayout(new BorderLayout());
 
         // Create a label and add it to the panel
-        JLabel welcomeLabel = new JLabel("Welcome to Sudoku Game!", SwingConstants.CENTER);
+        JLabel welcomeLabel = new JLabel("Enter your name", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
         panel.add(welcomeLabel, BorderLayout.NORTH);
 
         // Create a text field for player name
         nameField = new JTextField();
-        nameField.setPreferredSize(new Dimension(250, 30));
+        nameField.setPreferredSize(new Dimension(250, 10));
         panel.add(nameField, BorderLayout.CENTER);
+
+        String[] difficultyLevels = {"Easy", "Medium", "Hard"};
+        difficultyComboBox = new JComboBox<>(difficultyLevels);
+        panel.add(difficultyComboBox, BorderLayout.WEST);
 
         // Create a button to start the game
         startButton = new JButton("Start Game");
@@ -43,18 +48,18 @@ public class WelcomeScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String playerName = nameField.getText().trim();
+                String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
 
                 if (!playerName.isEmpty()) {
                     // Dispose the welcome screen and start the main game window
                     dispose();
-                    new SudokuMain(playerName);  // Pass the player's name to the main game window
+                    new SudokuMain(playerName, selectedDifficulty);  // Pass player's name and difficulty to the main game window
                 } else {
                     JOptionPane.showMessageDialog(WelcomeScreen.this, "Please enter your name", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        // Make the welcome screen visible
         setVisible(true);
     }
 

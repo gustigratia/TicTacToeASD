@@ -14,11 +14,14 @@ public class SudokuMain extends JFrame {
     JButton btnNewGame = new JButton("New Game");
 
     // Constructor
-    public SudokuMain(String playerName) {
+    public SudokuMain(String playerName, String selectedDifficulty) {
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
 
         cp.add(board, BorderLayout.CENTER);
+        JLabel difficultyLabel = new JLabel("Difficulty: " + selectedDifficulty, SwingConstants.CENTER);
+        difficultyLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        cp.add(difficultyLabel, BorderLayout.SOUTH);
 
         // Add a button to the south to re-start the game via board.newGame()
         cp.add(btnNewGame, BorderLayout.SOUTH);
@@ -26,17 +29,18 @@ public class SudokuMain extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                dispose();
-                board.newGame();
+                board.newGame(selectedDifficulty);
             }
         });
 
         // Initialize the game board to start the game
-        board.newGame();
+        board.newGame(selectedDifficulty);
 
         pack();     // Pack the UI components, instead of using setSize()
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // to handle window-closing
         setTitle(playerName + "'s Sudoku");
         setVisible(true);
+        setLocationRelativeTo(null);
     }
 
 
