@@ -1,3 +1,6 @@
+import java.util.Random;
+import java.util.*;
+
 public class Puzzle {
     // All variables have package access
     // The numbers on the puzzle
@@ -14,57 +17,101 @@ public class Puzzle {
     //  to control the difficulty level.
     // This method shall set (or update) the arrays numbers and isGiven
     public void newPuzzle(int cellsToGuess) {
-        // I hardcode a puzzle here for illustration and testing.
-        int[][] hardcodedNumbers =
-                {{5, 3, 4, 6, 7, 8, 9, 1, 2},
-                        {6, 7, 2, 1, 9, 5, 3, 4, 8},
-                        {1, 9, 8, 3, 4, 2, 5, 6, 7},
-                        {8, 5, 9, 7, 6, 1, 4, 2, 3},
-                        {4, 2, 6, 8, 5, 3, 7, 9, 1},
-                        {7, 1, 3, 9, 2, 4, 8, 5, 6},
-                        {9, 6, 1, 5, 3, 7, 2, 8, 4},
-                        {2, 8, 7, 4, 1, 9, 6, 3, 5},
-                        {3, 4, 5, 2, 8, 6, 1, 7, 9}};
+        resetPuzzle();
+        generateSolvedPuzzle();
+        setCellsToGuess(cellsToGuess);
+    }
 
-        // Copy from hardcodedNumbers into the array "numbers"
-        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
-            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
-                numbers[row][col] = hardcodedNumbers[row][col];
-            }
-        }
-
-        // Need to use input parameter cellsToGuess!
-        // Hardcoded for testing, only 2 cells of "8" is NOT GIVEN
-//        boolean[][] hardcodedIsGiven =
-//                {{true, true, true, true, true, false, true, true, true},
-//                        {true, true, true, true, true, true, true, true, false},
-//                        {true, true, true, true, true, true, true, true, true},
-//                        {true, true, true, true, true, true, true, true, true},
-//                        {true, true, true, true, true, true, true, true, true},
-//                        {true, true, true, true, true, true, true, true, true},
-//                        {true, true, true, true, true, true, true, true, true},
-//                        {true, true, true, true, true, true, true, true, true},
-//                        {true, true, true, true, true, true, true, true, true}};
-
-        boolean[][] hardcodedIsGiven = {
-                {true, true, true, false, true, false, true, true, true},
-                {true, true, false, true, true, true, true, false, false},
-                {true, false, true, true, false, true, false, true, true},
-                {true, true, false, true, true, false, true, false, true},
-                {false, true, true, false, true, true, false, true, true},
-                {true, false, true, true, false, true, true, false, false},
-                {false, true, true, false, true, false, true, true, true},
-                {true, false, true, true, true, false, true, false, true},
-                {true, true, false, true, true, true, false, true, false}
-        };
-
-        // Copy from hardcodedIsGiven into array "isGiven"
-        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
-            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
-                isGiven[row][col] = hardcodedIsGiven[row][col];
+    private void resetPuzzle() {
+        // Reset numbers to 0
+        for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
+            for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
+                this.numbers[i][j] = 0;
+                this.isGiven[i][j] = true;  // Initially, all cells are 'given'
             }
         }
     }
 
+    private void generateSolvedPuzzle() {
+        // Initialize the grid
+        fillGrid(numbers);
+    }
+
+    private boolean fillGrid(int[][] grid) {
+        // Loop through all cells in the grid
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                // Find an empty cell (value is 0)
+                if (grid[row][col] == 0) {
+                    // Create a list of numbers 1 to 9 and shuffle it for randomization
+                    List<Integer> numbersList = new ArrayList<>();
+                    for (int num = 1; num <= SudokuConstants.GRID_SIZE; num++) {
+                        numbersList.add(num);
+                    }
+                    Collections.shuffle(numbersList); // Randomize the order of numbers
+
+                    // Try each number in random order
+                    for (int num : numbersList) {
+                        if (isSafe(grid, row, col, num)) {
+                            grid[row][col] = num;  // Try placing the number
+                            if (fillGrid(grid)) {  // Recursively try to fill the rest of the grid
+                                return true;  // If successful, return true
+                            }
+                            grid[row][col] = 0;  // Backtrack if no valid number was found
+                        }
+                    }
+
+                    return false;  // If no number fits, return false
+                }
+            }
+        }
+
+        return true;  // If all cells are filled, return true
+    }
+
+
+    private boolean isSafe(int[][] grid, int row, int col, int num) {
+        // Check row and column
+        for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
+            if (grid[row][i] == num || grid[i][col] == num) {
+                return false;
+            }
+        }
+
+        // Check the 3x3 subgrid
+        int startRow = row - row % 3;
+        int startCol = col - col % 3;
+        for (int i = startRow; i < startRow + 3; i++) {
+            for (int j = startCol; j < startCol + 3; j++) {
+                if (grid[i][j] == num) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void setCellsToGuess(int cellsToGuess) {
+        // Initialize isGiven array to all true (indicating all cells are given)
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                isGiven[row][col] = true;
+            }
+        }
+
+        // Randomly set some cells as 'not given'
+        int cellsRemoved = 0;
+        while (cellsRemoved < cellsToGuess) {
+            int row = (int) (Math.random()*9);
+            int col = (int) (Math.random()*9);
+
+            if (isGiven[row][col]) {  // If it's still marked as 'given', remove it
+                isGiven[row][col] = false;
+                numbers[row][col] = 0;  // Empty the cell
+                cellsRemoved++;
+            }
+        }
+    }
     //(For advanced students) use singleton design pattern for this class
 }
