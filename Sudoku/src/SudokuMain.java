@@ -28,8 +28,9 @@ public class SudokuMain extends JFrame {
         btnNewGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                dispose();
-                board.newGame(selectedDifficulty);
+                dispose();
+//                board.newGame(selectedDifficulty);
+                new WelcomeScreen();
             }
         });
 
@@ -47,6 +48,11 @@ public class SudokuMain extends JFrame {
     /** The entry main() entry method */
     public static void main(String[] args) {
         // Run the constructor of the WelcomeScreen first
-
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new WelcomeScreen();  // Show the welcome screen first
+            }
+        });
     }
 }
