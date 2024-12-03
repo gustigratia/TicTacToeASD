@@ -17,17 +17,29 @@ public class GameBoardPanel extends JPanel {
     /** It also contains a Puzzle with array numbers and isGiven */
     private Puzzle puzzle = new Puzzle();
 
+    // Timer
+    private JLabel timerLabel;
+    private Timer timer;
+    private int elapsedTime;
+    private boolean isPaused = false;
+    private JButton btnPauseResume;
+
     /** Constructor */
     public GameBoardPanel() {
-        super.setLayout(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));  // JPanel
+        super.setLayout(new BorderLayout());  // JPanel
+
+        JPanel boardPanel = new JPanel(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));
 
         // Allocate the 2D array of Cell, and added into JPanel.
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
                 cells[row][col] = new Cell(row, col);
-                super.add(cells[row][col]);   // JPanel
+                boardPanel.add(cells[row][col]);   // JPanel
             }
         }
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BorderLayout());
 
         // [TODO 3] Allocate a common listener as the ActionEvent listener for all the
         //  Cells (JTextFields)
@@ -45,9 +57,71 @@ public class GameBoardPanel extends JPanel {
             }
         }
 
-        super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
+
+
+        super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT + CELL_SIZE));
+
+        timerLabel = new JLabel("Time: 00:00", SwingConstants.CENTER);
+        timerLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        btnPauseResume = new JButton("Pause");
+        btnPauseResume.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleTimer();  // Toggle between pause and resume
+            }
+        });
+
+        bottomPanel.add(timerLabel, BorderLayout.CENTER);
+        bottomPanel.add(btnPauseResume, BorderLayout.EAST);
+
+        super.add(boardPanel, BorderLayout.CENTER);
+        super.add(bottomPanel, BorderLayout.SOUTH);
+
+        elapsedTime = 0;  // Start with 0 seconds
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!isPaused) {  // Only update time if not paused
+                    elapsedTime++;
+                    updateTimerLabel();
+                }
+            }
+        });
     }
 
+    private void updateTimerLabel() {
+        int minutes = elapsedTime / 60;
+        int seconds = elapsedTime % 60;
+        String time = String.format("Time: %02d:%02d", minutes, seconds);
+        timerLabel.setText(time);
+    }
+
+    private void toggleTimer() {
+        if (isPaused) {
+            // Resume the timer
+            timer.start();
+            btnPauseResume.setText("Pause");
+        } else {
+            // Pause the timer
+            timer.stop();
+            btnPauseResume.setText("Resume");
+        }
+        isPaused = !isPaused;
+    }
+
+    public void pauseTimer() {
+        if (timer != null) {
+            timer.stop();
+        }
+    }
+
+
+    public void resumeTimer() {
+        if (timer != null && !isPaused) {
+            timer.start();
+        }
+    }
     /**
      * Generate a new puzzle; and reset the game board of cells based on the puzzle.
      * You can call this method to start a new game.
@@ -70,6 +144,10 @@ public class GameBoardPanel extends JPanel {
                 break;
         }
         puzzle.newPuzzle(cellsToGuess);
+        elapsedTime = 0;
+        updateTimerLabel();
+        isPaused = false;
+        timer.start();
 
         // Initialize all the 9x9 cells, based on the puzzle.
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {

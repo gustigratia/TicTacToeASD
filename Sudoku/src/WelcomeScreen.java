@@ -62,14 +62,4 @@ public class WelcomeScreen extends JFrame {
 
         setVisible(true);
     }
-
-//    public static void main(String[] args) {
-//        // Run the constructor of the WelcomeScreen
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                new WelcomeScreen();  // Show the welcome screen first
-//            }
-//        });
-//    }
 }
