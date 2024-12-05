@@ -1,11 +1,11 @@
-package Tictactoe;
+package Othello;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class TicTacToe extends JFrame {
+public class GameMain extends JFrame {
     private static final long serialVersionUID = 1L;
 
     // Private variables
@@ -19,7 +19,7 @@ public class TicTacToe extends JFrame {
     private static final Color COLOR_BG_STATUS = new Color(220, 220, 220);  // Background color for the status bar
 
     // Constructor
-    public TicTacToe() {
+    public GameMain() {
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
 
@@ -52,7 +52,6 @@ public class TicTacToe extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Handle window-closing
         setTitle("Tic-Tac-Toe");  // Update window title
         setVisible(true);
-        setLocationRelativeTo(null);
     }
 
     // Method to start a new game
@@ -91,13 +90,13 @@ public class TicTacToe extends JFrame {
             statusBar.setText((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn");
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("It's a Draw! Click 'New Game' to play again");
+            statusBar.setText("It's a Draw! Click to play again");
         } else if (currentState == State.CROSS_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'X' Won! Click 'New Game' to play again");
+            statusBar.setText("'X' Won! Click to play again");
         } else if (currentState == State.NOUGHT_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'O' Won! Click 'New Game' to play again");
+            statusBar.setText("'O' Won! Click to play again");
         }
     }
 
@@ -108,6 +107,6 @@ public class TicTacToe extends JFrame {
 
     // Main entry point
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(TicTacToe::new);  // Launch the game in the EDT
+        SwingUtilities.invokeLater(Tictactoe.TicTacToe::new);  // Launch the game in the EDT
     }
 }
