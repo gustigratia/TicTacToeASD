@@ -1,12 +1,11 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
 public class WelcomeScreen extends JFrame {
     private static final long serialVersionUID = 1L;
 
-    // Declare components
     private JTextField nameField;
     private JButton startButton;
     private JComboBox<String> difficultyComboBox;
@@ -14,43 +13,59 @@ public class WelcomeScreen extends JFrame {
     public WelcomeScreen() {
         // Set up the welcome screen JFrame
         setTitle("Welcome to Sudoku");
-        setSize(400, 120);  // Set size for welcome screen
+        setSize(500, 500);  // Set size for welcome screen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);  // Center the window
 
-        // Create a panel for the layout
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        // Load the background image
+        ImageIcon backgroundIcon = new ImageIcon("src/2.jpg");
+        Image backgroundImage = backgroundIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
 
-        // Create a label and add it to the panel
-        JLabel welcomeLabel = new JLabel("Enter your name", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        panel.add(welcomeLabel, BorderLayout.NORTH);
+        // Create a custom panel to draw the background image
+        JPanel backgroundPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        backgroundPanel.setLayout(null); // Use null layout for absolute positioning
 
-        // Create a text field for player name
+        // Create the label for "Enter your username"
+        JLabel usernameLabel = new JLabel("Enter your username:");
+        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        usernameLabel.setBounds(185, 290, 200, 20); // Set position for the label
+        usernameLabel.setForeground(Color.WHITE); // Set text color to white
+
+        // Create the text field for player name
         nameField = new JTextField();
-        nameField.setPreferredSize(new Dimension(250, 10));
-        panel.add(nameField, BorderLayout.CENTER);
+        nameField.setBounds(125, 310, 250, 30); // Position the text field below the label
 
+        // Create the difficulty combo box
         String[] difficultyLevels = {"Easy", "Medium", "Hard"};
         difficultyComboBox = new JComboBox<>(difficultyLevels);
-        panel.add(difficultyComboBox, BorderLayout.WEST);
+        difficultyComboBox.setBounds(190, 355, 120, 30);
 
-        // Create a button to start the game
-        startButton = new JButton("Start Game");
-        panel.add(startButton, BorderLayout.SOUTH);
+        // Create the start button
+        startButton = new JButton("PLAY");
+        startButton.setBounds(200, 400, 100, 40);
+
+        // Add components to the panel
+        backgroundPanel.add(usernameLabel); // Add label to panel
+        backgroundPanel.add(nameField);     // Add text field to panel
+        backgroundPanel.add(difficultyComboBox);  // Add combo box to panel
+        backgroundPanel.add(startButton);   // Add button to panel
 
         // Add the panel to the frame
-        add(panel);
+        add(backgroundPanel);
 
         // Button click action to start the game
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                SoundEffect.CLICK.play();
                 String playerName = nameField.getText().trim();
                 String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
-                SoundEffect.CLICK.play();
-
 
                 if (!playerName.isEmpty()) {
                     // Dispose the welcome screen and start the main game window
@@ -65,4 +80,5 @@ public class WelcomeScreen extends JFrame {
 
         setVisible(true);
     }
+
 }
