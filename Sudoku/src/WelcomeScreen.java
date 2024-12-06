@@ -80,4 +80,5 @@ public class WelcomeScreen extends JFrame {
 
         setVisible(true);
     }
+
 }
