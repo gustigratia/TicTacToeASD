@@ -1,4 +1,4 @@
-# TicTacToeASD
+# Data Structure and Algorithms - Final Project 
 
 Contributor: 
 1. Arya Wiraguna Dwiputra (5026231083)
