@@ -62,6 +62,7 @@ public class Cell extends JTextField {
             SoundEffect.CORRECT.play();
         } else if (status == CellStatus.WRONG_GUESS) {    // from TO_GUESS
             super.setBackground(BG_WRONG_GUESS);
+            System.out.println("Wrong");
             SoundEffect.WRONG.play();
         }
     }
