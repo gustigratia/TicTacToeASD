@@ -53,7 +53,6 @@ public class SudokuMain extends JFrame {
                 SoundEffect.SONG.play();
                 SoundEffect.SONG.loop();// Memulai musik
                 new WelcomeScreen();  // Show the welcome screen first
-
             }
         });
     }

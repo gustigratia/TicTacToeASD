@@ -103,7 +103,6 @@ public class Puzzle {
 
             if (isGiven[row][col]) {  // If it's still marked as 'given', remove it
                 isGiven[row][col] = false;
-                numbers[row][col] = 0;  // Empty the cell
                 cellsRemoved++;
             }
         }

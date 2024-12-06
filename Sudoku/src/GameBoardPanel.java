@@ -147,6 +147,7 @@ public class GameBoardPanel extends JPanel {
         puzzle.newPuzzle(cellsToGuess);
         elapsedTime = 0;
         updateTimerLabel();
+        updateTimerLabel();
         isPaused = false;
         timer.start();
 
