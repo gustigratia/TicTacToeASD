@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+
 public class SudokuMain extends JFrame {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
 
