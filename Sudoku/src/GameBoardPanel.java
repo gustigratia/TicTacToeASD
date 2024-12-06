@@ -68,6 +68,7 @@ public class GameBoardPanel extends JPanel {
         btnPauseResume.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                SoundEffect.CLICK.play();
                 toggleTimer();  // Toggle between pause and resume
             }
         });
@@ -205,6 +206,7 @@ public class GameBoardPanel extends JPanel {
              */
             if(isSolved()){
                 JOptionPane.showMessageDialog(null, "Congratulation!");
+                SoundEffect.WIN.play();
             }
         }
     }

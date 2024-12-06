@@ -49,12 +49,15 @@ public class WelcomeScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String playerName = nameField.getText().trim();
                 String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
+                SoundEffect.CLICK.play();
+
 
                 if (!playerName.isEmpty()) {
                     // Dispose the welcome screen and start the main game window
                     dispose();
                     new SudokuMain(playerName, selectedDifficulty);  // Pass player's name and difficulty to the main game window
                 } else {
+                    SoundEffect.WRONG.play();
                     JOptionPane.showMessageDialog(WelcomeScreen.this, "Please enter your name", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }

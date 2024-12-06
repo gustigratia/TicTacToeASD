@@ -2,9 +2,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.sound.sampled.*;
-import java.io.File;
-import java.io.IOException;
 
 public class SudokuMain extends JFrame {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
@@ -29,6 +26,7 @@ public class SudokuMain extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                SoundEffect.CLICK.play();
 //                board.newGame(selectedDifficulty);
                 new WelcomeScreen();
             }
@@ -51,7 +49,11 @@ public class SudokuMain extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                SoundEffect.initGame();  // Memuat semua file audio
+                SoundEffect.SONG.play();
+                SoundEffect.SONG.loop();// Memulai musik
                 new WelcomeScreen();  // Show the welcome screen first
+
             }
         });
     }
