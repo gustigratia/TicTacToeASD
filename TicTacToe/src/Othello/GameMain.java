@@ -107,6 +107,6 @@ public class GameMain extends JFrame {
 
     // Main entry point
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Tictactoe.TicTacToe::new);  // Launch the game in the EDT
+        SwingUtilities.invokeLater(OthelloMain::new);  // Launch the game in the EDT
     }
 }
