@@ -1,4 +1,4 @@
-/**
+package Sudoku; /**
  * ES234317-Algorithm and Data Structures
  * Semester Ganjil, 2024/2025
  * Group Capstone Project
@@ -56,7 +56,7 @@ public class SudokuMain extends JFrame {
 
     /** The entry main() entry method */
     public static void main(String[] args) {
-        // Run the constructor of the WelcomeScreen first
+        // Run the constructor of the Sudoku.WelcomeScreen first
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

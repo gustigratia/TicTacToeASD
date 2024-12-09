@@ -1,4 +1,4 @@
-/**
+package Sudoku; /**
  * ES234317-Algorithm and Data Structures
  * Semester Ganjil, 2024/2025
  * Group Capstone Project
@@ -16,7 +16,7 @@ public class GameBoardPanel extends JPanel {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
 
     // Define named constants for UI sizes
-    public static final int CELL_SIZE = 60;   // Cell width/height in pixels
+    public static final int CELL_SIZE = 60;   // Sudoku.Cell width/height in pixels
     public static final int BOARD_WIDTH  = CELL_SIZE * SudokuConstants.GRID_SIZE;
     public static final int BOARD_HEIGHT = CELL_SIZE * SudokuConstants.GRID_SIZE;
     // Board width/height in pixels
@@ -24,7 +24,7 @@ public class GameBoardPanel extends JPanel {
     // Define properties
     /** The game board composes of 9x9 Cells (customized JTextFields) */
     private Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
-    /** It also contains a Puzzle with array numbers and isGiven */
+    /** It also contains a Sudoku.Puzzle with array numbers and isGiven */
     private Puzzle puzzle = new Puzzle();
 
     // Timer
@@ -40,7 +40,7 @@ public class GameBoardPanel extends JPanel {
 
         JPanel boardPanel = new JPanel(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));
 
-        // Allocate the 2D array of Cell, and added into JPanel.
+        // Allocate the 2D array of Sudoku.Cell, and added into JPanel.
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
                 cells[row][col] = new Cell(row, col);
@@ -59,8 +59,8 @@ public class GameBoardPanel extends JPanel {
         // [TODO 4] Adds this common listener to all editable cells
         // .........
 
-        for (int row = 0;row<SudokuConstants.GRID_SIZE;row++) {
-            for (int col = 0;col<SudokuConstants.GRID_SIZE;col++) {
+        for (int row = 0; row< SudokuConstants.GRID_SIZE; row++) {
+            for (int col = 0; col< SudokuConstants.GRID_SIZE; col++) {
                 if (cells[row][col].isEditable()) {
                     cells[row][col].addActionListener(listener);   // For all editable rows and cols
                 }

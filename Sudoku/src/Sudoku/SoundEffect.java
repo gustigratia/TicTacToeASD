@@ -1,4 +1,4 @@
-/**
+package Sudoku; /**
  * ES234317-Algorithm and Data Structures
  * Semester Ganjil, 2024/2025
  * Group Capstone Project
@@ -14,11 +14,11 @@ import javax.sound.sampled.Clip;
 import java.net.URL;
 
 public enum SoundEffect {
-    SONG("game.wav"),
-    CORRECT("correct.wav"),
-    WRONG("wrong.wav"),
-    CLICK("click.wav"),
-    WIN("win.wav");
+    SONG("Audio/game.wav"),
+    CORRECT("Audio/correct.wav"),
+    WRONG("Audio/wrong.wav"),
+    CLICK("Audio/click.wav"),
+    WIN("Audio/win.wav");
 
     public static enum Volume {
         MUTE, LOW, MEDIUM, HIGH

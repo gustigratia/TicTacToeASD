@@ -1,4 +1,4 @@
-/**
+package Sudoku; /**
  * ES234317-Algorithm and Data Structures
  * Semester Ganjil, 2024/2025
  * Group Capstone Project
@@ -12,14 +12,14 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JTextField;
 /**
- * The Cell class model the cells of the Sudoku puzzle, by customizing (subclass)
+ * The Sudoku.Cell class model the cells of the Sudoku puzzle, by customizing (subclass)
  * the javax.swing.JTextField to include row/column, puzzle number and status.
  */
 public class Cell extends JTextField {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
 
     //  Define named constants for JTextField's colors and fonts
-    //  to be chosen based on CellStatus
+    //  to be chosen based on Sudoku.CellStatus
     public static final Color BG_GIVEN = new Color(240, 240, 240); // RGB
     public static final Color FG_GIVEN = Color.BLACK;
     public static final Color FG_NOT_GIVEN = Color.GRAY;
@@ -33,7 +33,7 @@ public class Cell extends JTextField {
     int row, col;
     /** The puzzle number [1-9] for this cell */
     int number;
-    /** The status of this cell defined in enum CellStatus */
+    /** The status of this cell defined in enum Sudoku.CellStatus */
     CellStatus status;
 
     /** Constructor */
@@ -53,7 +53,7 @@ public class Cell extends JTextField {
         paint();    // paint itself
     }
 
-    /** This Cell (JTextField) paints itself based on its status */
+    /** This Sudoku.Cell (JTextField) paints itself based on its status */
     public void paint() {
         if (status == CellStatus.GIVEN) {
             // Inherited from JTextField: Set display properties

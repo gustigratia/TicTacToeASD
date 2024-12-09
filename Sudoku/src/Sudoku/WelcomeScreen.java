@@ -1,3 +1,5 @@
+package Sudoku;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,7 +20,7 @@ public class WelcomeScreen extends JFrame {
         setLocationRelativeTo(null);  // Center the window
 
         // Load the background image
-        ImageIcon backgroundIcon = new ImageIcon("src/2.jpg");
+        ImageIcon backgroundIcon = new ImageIcon("src/Images/2.jpg");
         Image backgroundImage = backgroundIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
 
         // Create a custom panel to draw the background image
