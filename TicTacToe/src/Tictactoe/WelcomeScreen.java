@@ -1,6 +1,9 @@
 package Tictactoe;
 
 import javax.swing.*;
+
+import Othello.OthelloMain;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,15 +16,13 @@ public class WelcomeScreen extends JFrame {
     private static final long serialVersionUID = 1L;
 
     public WelcomeScreen() {
-        setTitle("Welcome to Tic-Tac-Toe!");
+        setTitle("Welcome to Tic-Tac-Toe and Othello!");
         setSize(800, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
-
         // Background GIF
-        JLabel background = new JLabel(new ImageIcon("src/images/BG1.gif")); // Ensure "background.gif" exists
+        JLabel background = new JLabel(new ImageIcon("src/images/BG.gif")); // Ensure "background.gif" exists
         background.setLayout(new BorderLayout());
         setContentPane(background);
 
@@ -34,32 +35,43 @@ public class WelcomeScreen extends JFrame {
 
         // Button Panel
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1, 20, 20));
+        buttonPanel.setLayout(new GridLayout(3, 1, 20, 20));
         buttonPanel.setOpaque(false);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 50, 150));
 
-        // Button for "1 Player" (vs AI)
-        JButton btnVsAI = createStyledButton("1 Player (vs AI)");
+        // Button for "1 Player" (vs AI) in Tic-Tac-Toe
+        JButton btnVsAI = createStyledButton("Tic-Tac-Toe: 1 Player (vs AI)");
         btnVsAI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SoundEffect.CLICK.play(); // Ensure "click.wav" exists
-                startGame(true);
+                startTicTacToeGame(true);
             }
         });
 
-        // Button for "2 Players" (vs Human)
-        JButton btnVsHuman = createStyledButton("2 Players (vs Human)");
+        // Button for "2 Players" (vs Human) in Tic-Tac-Toe
+        JButton btnVsHuman = createStyledButton("Tic-Tac-Toe: 2 Players (vs Human)");
         btnVsHuman.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SoundEffect.CLICK.play();
-                startGame(false);
+                startTicTacToeGame(false);
+            }
+        });
+
+        // Button for Othello
+        JButton btnOthello = createStyledButton("Play Othello");
+        btnOthello.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SoundEffect.CLICK.play();
+                startOthelloGame();
             }
         });
 
         buttonPanel.add(btnVsAI);
         buttonPanel.add(btnVsHuman);
+        buttonPanel.add(btnOthello);
         background.add(buttonPanel, BorderLayout.CENTER);
 
         setVisible(true);
@@ -75,9 +87,14 @@ public class WelcomeScreen extends JFrame {
         return button;
     }
 
-    private void startGame(boolean isSinglePlayer) {
+    private void startTicTacToeGame(boolean isSinglePlayer) {
         dispose();
         SwingUtilities.invokeLater(() -> new TicTacToe(isSinglePlayer));
+    }
+
+    private void startOthelloGame() {
+        dispose();
+        SwingUtilities.invokeLater(() -> new OthelloMain()); // Assumes Othello class exists
     }
 
     private void playBackgroundMusic(String filePath) {
@@ -115,6 +132,6 @@ public class WelcomeScreen extends JFrame {
     public static void main(String[] args) {
         new WelcomeScreen();
         SoundEffect.BG.play();
-        SoundEffect.BG.loop();// Memulai musik
+        SoundEffect.BG.loop(); // Memulai musik
     }
 }

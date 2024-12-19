@@ -3,9 +3,7 @@ package Othello;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-/**
- * Tic-Tac-Toe: Two-player Graphics version with Simple-OO in one class
- */
+
 public class OthelloMain extends JFrame {
     private static final long serialVersionUID = 1L; // to prevent serializable warning
 
@@ -19,28 +17,62 @@ public class OthelloMain extends JFrame {
     public static final int BOARD_HEIGHT = CELL_SIZE * ROWS;
     public static final int GRID_WIDTH = 7;                  // Grid-line's width
     public static final int GRID_WIDTH_HALF = GRID_WIDTH / 2;
-    // Symbols (cross/nought) are displayed inside a cell, with padding from border
+    // Symbols (cross/black) are displayed inside a cell, with padding from border
     public static final int CELL_PADDING = CELL_SIZE / 5;
     public static final int SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2; // width/height
     public static final int SYMBOL_STROKE_WIDTH = 8; // pen's stroke width
     public static final Color COLOR_BG = new Color(173, 216, 230);  // background
     public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
-    public static final Color COLOR_GRID   = Color.gray;  // grid lines
-    public static final Color COLOR_CROSS  = new Color(255, 255, 255);  // Red #D32D41
-    public static final Color COLOR_NOUGHT = new Color(0, 0, 0); // Blue #4CB5F5
+    public static final Color COLOR_GRID   = new Color(0, 0, 0, 128);  // grid lines
+    public static final Color COLOR_WHITE  = new Color(255, 255, 255);  // White
+    public static final Color COLOR_BLACK  = new Color(0, 0, 0); // Black
     public static final Font FONT_STATUS = new Font("OCR A Extended", Font.PLAIN, 14);
+
+    public boolean isValidMove(Seed player, int row, int col) {
+        if (board[row][col] != Seed.NO_SEED) {
+            return false; // The cell must be empty
+        }
+
+        Seed opponent = (player == Seed.WHITE) ? Seed.BLACK : Seed.WHITE;
+
+        // Directions for row/column/direction (8 directions)
+        int[] rowDirections = {-1, -1, -1, 0, 1, 1, 1, 0};  // up-left, up, up-right, right, down-right, down, down-left, left
+        int[] colDirections = {-1, 0, 1, 1, 1, 0, -1, -1};  // up-left, up, up-right, right, down-right, down, down-left, left
+
+        // Check all 8 directions
+        for (int i = 0; i < 8; i++) {
+            int r = row + rowDirections[i];
+            int c = col + colDirections[i];
+
+            boolean canFlip = false;
+
+            // Move in the current direction while the cell contains the opponent's piece
+            while (r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] == opponent) {
+                r += rowDirections[i];
+                c += colDirections[i];
+                canFlip = true;  // Found an opponent's piece, can potentially flip
+            }
+
+            // Check if the last cell is the player's seed
+            if (canFlip && r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] == player) {
+                return true;  // Found a valid move in this direction
+            }
+        }
+
+        return false;  // No valid direction found
+    }
 
     // This enum (inner class) contains the various states of the game
     public enum State {
-        PLAYING, DRAW, CROSS_WON, NOUGHT_WON
+        PLAYING, DRAW, WHITE_WON, BLACK_WON
     }
     private State currentState;  // the current game state
 
     // This enum (inner class) is used for:
-    // 1. Player: CROSS, NOUGHT
-    // 2. Cell's content: CROSS, NOUGHT and NO_SEED
+    // 1. Player: WHITE, BLACK
+    // 2. Cell's content: WHITE, BLACK and NO_SEED
     public enum Seed {
-        CROSS, NOUGHT, NO_SEED
+        WHITE, BLACK, NO_SEED
     }
     private Seed currentPlayer; // the current player
     private Seed[][] board;     // Game board of ROWS-by-COLS cells
@@ -67,22 +99,30 @@ public class OthelloMain extends JFrame {
                 // Get the row and column clicked
                 int row = mouseY / CELL_SIZE;
                 int col = mouseX / CELL_SIZE;
-
-                if (currentState == State.PLAYING) {
-                    if (row >= 0 && row < ROWS && col >= 0
-                            && col < COLS && board[row][col] == Seed.NO_SEED) {
+        
+                // Prevent clicks after the game is over
+                if (currentState != State.PLAYING) {
+                    return;  // Ignore clicks if the game is over
+                }
+        
+                if (row >= 0 && row < ROWS && col >= 0 && col < COLS && board[row][col] == Seed.NO_SEED) {
+                    // Check if the move is valid
+                    if (isValidMove(currentPlayer, row, col)) {
                         // Update board[][] and return the new game state after the move
                         currentState = updateGame(currentPlayer, row, col);
                         // Switch player
-                        currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+                        currentPlayer = (currentPlayer == Seed.WHITE) ? Seed.BLACK : Seed.WHITE;
                     }
-                } else {       // game over
-                    newGame(); // restart the game
+                } else {  // If clicked after game over, restart the game
+                    if (currentState != State.PLAYING) {
+                        newGame();  // restart the game
+                        repaint();  // refresh the canvas
+                    }
                 }
                 // Refresh the drawing canvas
                 repaint();  // Callback paintComponent().
             }
-        });
+        });        
 
         // Setup the status bar (JLabel) to display status message
         statusBar = new JLabel("       ");
@@ -99,7 +139,7 @@ public class OthelloMain extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();  // pack all the components in this JFrame
-        setTitle("Tic Tac Toe");
+        setTitle("Othello");
         setVisible(true);  // show this JFrame
         setLocationRelativeTo(null);
 
@@ -109,6 +149,7 @@ public class OthelloMain extends JFrame {
     /** Initialize the Game (run once) */
     public void initGame() {
         board = new Seed[ROWS][COLS]; // allocate array
+        newGame();
     }
 
     /** Reset the game-board contents and the status, ready for new game */
@@ -118,200 +159,135 @@ public class OthelloMain extends JFrame {
                 board[row][col] = Seed.NO_SEED; // all cells empty
             }
         }
-        currentPlayer = Seed.CROSS;    // cross plays first
+        // Place initial seeds for Othello game
+        board[3][3] = board[4][4] = Seed.WHITE;
+        board[3][4] = board[4][3] = Seed.BLACK;
+
+        currentPlayer = Seed.WHITE;    // white plays first
         currentState  = State.PLAYING; // ready to play
     }
 
     /**
      *  The given player makes a move on (selectedRow, selectedCol).
      *  Update cells[selectedRow][selectedCol]. Compute and return the
-     *  new game state (PLAYING, DRAW, CROSS_WON, NOUGHT_WON).
+     *  new game state (PLAYING, DRAW, WHITE_WON, BLACK_WON).
      */
-
     public State updateGame(Seed mySeed, int rowSelected, int colSelected) {
-        Seed opponentSeed = (mySeed == Seed.NOUGHT) ? Seed.CROSS : Seed.NOUGHT;
-
+        Seed opponentSeed = (mySeed == Seed.BLACK) ? Seed.WHITE : Seed.BLACK;
+    
         // Place the player's seed on the board
         board[rowSelected][colSelected] = mySeed;
-
+    
         // Directions for row/column/direction (8 directions)
         int[] rowDirections = {-1, -1, -1, 0, 1, 1, 1, 0};  // up-left, up, up-right, right, down-right, down, down-left, left
         int[] colDirections = {-1, 0, 1, 1, 1, 0, -1, -1};  // up-left, up, up-right, right, down-right, down, down-left, left
-
+    
         // Loop over all 8 possible directions
         for (int i = 0; i < 8; i++) {
             int row = rowSelected + rowDirections[i];
             int col = colSelected + colDirections[i];
             boolean canFlip = false;
-
+    
             // Find opponent's seeds in the current direction
             while (row >= 0 && row < ROWS && col >= 0 && col < COLS && board[row][col] == opponentSeed) {
                 row += rowDirections[i];
                 col += colDirections[i];
-                canFlip = true;  // Found an opponent's seed, can potentially flip
+                canFlip = true;
             }
-
-            // After scanning, check if the last cell is the player's seed
+    
+            // Check if we can flip the opponent's seeds
             if (canFlip && row >= 0 && row < ROWS && col >= 0 && col < COLS && board[row][col] == mySeed) {
-                // Flip all the opponent's seeds between selected cell and the player's seed
-                row = rowSelected + rowDirections[i];
-                col = colSelected + colDirections[i];
+                // Flip the opponent's seeds in this direction
+                row -= rowDirections[i];
+                col -= colDirections[i];
                 while (board[row][col] == opponentSeed) {
-                    board[row][col] = mySeed; // Flip the seed
-                    row += rowDirections[i];
-                    col += colDirections[i];
+                    board[row][col] = mySeed;
+                    row -= rowDirections[i];
+                    col -= colDirections[i];
                 }
             }
         }
+    
+        // Check if the game has ended
+        if (hasNoValidMoves(Seed.WHITE) && hasNoValidMoves(Seed.BLACK)) {
+            int whiteCount = 0, blackCount = 0;
+            for (int r = 0; r < ROWS; r++) {
+                for (int c = 0; c < COLS; c++) {
+                    if (board[r][c] == Seed.WHITE) whiteCount++;
+                    if (board[r][c] == Seed.BLACK) blackCount++;
+                }
+            }
+            if (whiteCount > blackCount) return State.WHITE_WON;
+            if (blackCount > whiteCount) return State.BLACK_WON;
+            return State.DRAW;  // Game is a draw
+        }
+    
+        return State.PLAYING;  // Game still ongoing
+    }    
 
-        // After making the move, check for game over
-        currentState = checkGameOver();
-//        if (currentState == State.PLAYING) {
-//            currentPlayer = (currentPlayer == Seed.NOUGHT) ? Seed.CROSS : Seed.NOUGHT; // Switch player
-//        }
-
-        repaint();  // Refresh the UI after the move
-        return currentState;
-    }
-
-
-
-
-    public State checkGameOver() {
-        boolean boardFull = true;
-        boolean hasValidMove = false;
-        int cross_count = 0;
-        int nought_count = 0;
-
+    /** Check if the player has any valid moves left */
+    private boolean hasNoValidMoves(Seed player) {
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
-                if (board[row][col] == Seed.NO_SEED) {
-                    boardFull = false;
+                if (board[row][col] == Seed.NO_SEED && isValidMove(player, row, col)) {
+                    return false;
                 }
-                else if(board[row][col] == Seed.CROSS){
-                    cross_count++;
-                }
-                else if(board[row][col] == Seed.NOUGHT){
-                    nought_count++;
-                }
-//                if (isValidMove(Seed.CROSS, row, col) || isValidMove(Seed.NOUGHT, row, col)) {
-//                    hasValidMove = true;
-//                }
             }
         }
-
-        if (boardFull && cross_count == nought_count) {
-            return State.DRAW;
-        } else if(boardFull && cross_count > nought_count) {
-            return State.CROSS_WON;
-        } else if(boardFull && nought_count > cross_count) {
-            return State.NOUGHT_WON;
-        }
-        return State.PLAYING;
+        return true;
     }
-
-    public boolean isValidMove(Seed player, int row, int col) {
-        if (board[row][col] != Seed.NO_SEED) {
-            return false; // Cell is already filled
-        }
-        // Check all 8 directions for a valid move
-        int[] rowDirections = {-1, -1, -1, 0, 1, 1, 1, 0};
-        int[] colDirections = {-1, 0, 1, 1, 1, 0, -1, -1};
-
-        for (int i = 0; i < 8; i++) {
-            int r = row + rowDirections[i];
-            int c = col + colDirections[i];
-            boolean canFlip = false;
-
-            while (r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] != Seed.NO_SEED) {
-                if (board[r][c] == player) {
-                    canFlip = true;
-                    break;
-                }
-                r += rowDirections[i];
-                c += colDirections[i];
-            }
-
-            if (canFlip) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 
     /**
-     *  Inner class DrawCanvas (extends JPanel) used for custom graphics drawing.
+     * This JPanel (inner class) will draw the game board.
      */
     class GamePanel extends JPanel {
-        private static final long serialVersionUID = 1L; // to prevent serializable warning
+        private static final long serialVersionUID = 1L;
 
+        // This is the method that does the actual drawing of the game.
         @Override
-        public void paintComponent(Graphics g) {  // Callback via repaint()
-            super.paintComponent(g);
-            setBackground(COLOR_BG);  // set its background color
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);  // Always call super.paintComponent() first
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // Draw the background and the grid
+            g2d.setColor(COLOR_BG);
+            g2d.fillRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 
             // Draw the grid lines
-            g.setColor(COLOR_GRID);
-            for (int row = 1; row < ROWS; ++row) {
-                g.fillRoundRect(0, CELL_SIZE * row - GRID_WIDTH_HALF,
-                        BOARD_WIDTH-1, GRID_WIDTH, GRID_WIDTH, GRID_WIDTH);
+            g2d.setColor(COLOR_GRID);
+            g2d.setStroke(new BasicStroke(GRID_WIDTH));
+            for (int row = 0; row <= ROWS; row++) {
+                g2d.drawLine(0, row * CELL_SIZE, BOARD_WIDTH, row * CELL_SIZE);
             }
-            for (int col = 1; col < COLS; ++col) {
-                g.fillRoundRect(CELL_SIZE * col - GRID_WIDTH_HALF, 0,
-                        GRID_WIDTH, BOARD_HEIGHT-1, GRID_WIDTH, GRID_WIDTH);
+            for (int col = 0; col <= COLS; col++) {
+                g2d.drawLine(col * CELL_SIZE, 0, col * CELL_SIZE, BOARD_HEIGHT);
             }
 
-            // Draw the Seeds of all the cells if they are not empty
-            // Use Graphics2D which allows us to set the pen's stroke
-            Graphics2D g2d = (Graphics2D)g;
-            g2d.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            for (int row = 0; row < ROWS; ++row) {
-                for (int col = 0; col < COLS; ++col) {
-                    int x1 = col * CELL_SIZE + CELL_PADDING/2;
-                    int y1 = row * CELL_SIZE + CELL_PADDING/2;
-                    int x2 = (col + 1) * CELL_SIZE ;
-                    int y2 = (row + 1) * CELL_SIZE ;
-                    if (board[row][col] == Seed.CROSS) {  // draw a 2-line cross
-                        g2d.setColor(COLOR_CROSS);
-//                        g2d.drawLine(x1, y1, x2, y2);
-//                        g2d.drawLine(x2, y1, x1, y2);
-                        g2d.fillOval(x1,y1,CELL_SIZE - CELL_PADDING,CELL_SIZE - CELL_PADDING);
-                    } else if (board[row][col] == Seed.NOUGHT) {  // draw a circle
-                        g2d.setColor(COLOR_NOUGHT);
-//                        g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
-                        g2d.fillOval(x1,y1,CELL_SIZE - CELL_PADDING,CELL_SIZE - CELL_PADDING);
-                    }
+            // Draw the pieces (Black and White) inside the grid cells
+            for (int row = 0; row < ROWS; row++) {
+                for (int col = 0; col < COLS; col++) {
+                    if (board[row][col] == Seed.NO_SEED) continue;
+                    Color color = (board[row][col] == Seed.WHITE) ? COLOR_WHITE : COLOR_BLACK;
+                    g2d.setColor(color);
+                    g2d.fillOval(col * CELL_SIZE + CELL_PADDING, row * CELL_SIZE + CELL_PADDING, SYMBOL_SIZE, SYMBOL_SIZE);
                 }
             }
 
-            // Print status message
+            // Show status (turn and winner)
             if (currentState == State.PLAYING) {
-                statusBar.setForeground(Color.BLACK);
-                statusBar.setText((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn");
+                statusBar.setText("Current Player: " + (currentPlayer == Seed.WHITE ? "White" : "Black"));
+            } else if (currentState == State.WHITE_WON) {
+                statusBar.setText("White Wins!");
+            } else if (currentState == State.BLACK_WON) {
+                statusBar.setText("Black Wins!");
             } else if (currentState == State.DRAW) {
-                statusBar.setForeground(Color.RED);
-                statusBar.setText("It's a Draw! Click to play again");
-            } else if (currentState == State.CROSS_WON) {
-                statusBar.setForeground(Color.RED);
-                statusBar.setText("'White' Won! Click to play again");
-            } else if (currentState == State.NOUGHT_WON) {
-                statusBar.setForeground(Color.RED);
-                statusBar.setText("'Black' Won! Click to play again");
+                statusBar.setText("Game Draw!");
             }
         }
     }
 
-    /** The entry main() method */
     public static void main(String[] args) {
-        // Run GUI codes in the Event-Dispatching thread for thread safety
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new OthelloMain(); // Let the constructor do the job
-            }
-        });
+        SwingUtilities.invokeLater(OthelloMain::new); // To ensure thread-safety for Swing components
     }
 }
