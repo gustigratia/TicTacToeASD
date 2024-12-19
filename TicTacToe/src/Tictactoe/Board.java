@@ -25,6 +25,7 @@ public class Board {
     public void newGame() {
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
+                SoundEffect.CLICK.play();
                 cells[row][col].newGame();  // Reset each cell
             }
         }

@@ -22,7 +22,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public enum SoundEffect {
     EAT_FOOD("audio/eatfood.wav"),
     EXPLODE("audio/eatfood.wav"),
-    DIE("audio/FAIL.wav");
+    DIE("audio/FAIL.wav"),
+    CLICK("audio/click.wav"),
+    BG("audio/music.wav");
 
     /** Nested enumeration for specifying volume */
     public static enum Volume {
@@ -54,6 +56,12 @@ public enum SoundEffect {
         }
     }
 
+    public void loop() {
+        if (clip != null) {
+            clip.loop(Clip.LOOP_CONTINUOUSLY); // Loop tanpa henti
+        }
+    }
+
     /** Play or Re-play the sound effect from the beginning, by rewinding. */
     public void play() {
         if (volume != Volume.MUTE) {
@@ -63,6 +71,8 @@ public enum SoundEffect {
             clip.start();     // Start playing
         }
     }
+
+
 
     /** Optional static method to pre-load all the sound files. */
     static void initGame() {

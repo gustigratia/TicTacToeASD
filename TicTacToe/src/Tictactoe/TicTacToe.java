@@ -116,8 +116,4 @@ public class TicTacToe extends JFrame {
             statusBar.setText("'O' Won! Click 'New Game' to play again");
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new WelcomeScreen());
-    }
 }
