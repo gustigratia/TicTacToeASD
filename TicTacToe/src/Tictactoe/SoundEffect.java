@@ -24,7 +24,9 @@ public enum SoundEffect {
     EXPLODE("audio/eatfood.wav"),
     DIE("audio/FAIL.wav"),
     CLICK("audio/click.wav"),
-    BG("audio/music.wav");
+    BG("audio/music.wav"),
+    WIN("audio/win.wav"),
+    DRAW("audio/draw.wav");
 
     /** Nested enumeration for specifying volume */
     public static enum Volume {

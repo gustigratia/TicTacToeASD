@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
 public class TicTacToe extends JFrame {
     private static final long serialVersionUID = 1L;
 
@@ -108,14 +109,17 @@ public class TicTacToe extends JFrame {
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("It's a Draw! Click 'New Game' to play again");
+            SoundEffect.DRAW.play();
             // Tambahin suara draw (Pake Class SoundEffect)
         } else if (currentState == State.CROSS_WON) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("'X' Won! Click 'New Game' to play again");
+            SoundEffect.WIN.play();
             // Tambahin suara menang / tepuk tangan / bebaslah
         } else if (currentState == State.NOUGHT_WON) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("'O' Won! Click 'New Game' to play again");
+            SoundEffect.WIN.play();
             // Tambahin suara menang / tepuk tangan / bebaslah
         }
     }
