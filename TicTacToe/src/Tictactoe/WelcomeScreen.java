@@ -22,7 +22,7 @@ public class WelcomeScreen extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Background GIF
-        JLabel background = new JLabel(new ImageIcon("src/images/BG.gif")); // Ensure "background.gif" exists
+        JLabel background = new JLabel(new ImageIcon("src/images/BG1.gif")); // Ensure "background.gif" exists
         background.setLayout(new BorderLayout());
         setContentPane(background);
 
