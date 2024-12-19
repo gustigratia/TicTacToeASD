@@ -21,7 +21,7 @@ public class WelcomeScreen extends JFrame {
 
 
         // Background GIF
-        JLabel background = new JLabel(new ImageIcon("C:/Users/naufal/FinalProjectASD/TicTacToe/src/images/BG1.gif")); // Ensure "background.gif" exists
+        JLabel background = new JLabel(new ImageIcon("src/images/BG1.gif")); // Ensure "background.gif" exists
         background.setLayout(new BorderLayout());
         setContentPane(background);
 

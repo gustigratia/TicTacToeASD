@@ -108,12 +108,15 @@ public class TicTacToe extends JFrame {
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("It's a Draw! Click 'New Game' to play again");
+            // Tambahin suara draw (Pake Class SoundEffect)
         } else if (currentState == State.CROSS_WON) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("'X' Won! Click 'New Game' to play again");
+            // Tambahin suara menang / tepuk tangan / bebaslah
         } else if (currentState == State.NOUGHT_WON) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("'O' Won! Click 'New Game' to play again");
+            // Tambahin suara menang / tepuk tangan / bebaslah
         }
     }
 }
